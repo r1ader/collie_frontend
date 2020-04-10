@@ -1,0 +1,28 @@
+.mainTable {
+
+}
+
+.newOneContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.mainContainer {
+    display: flex;
+    height: calc(100vh - 50px);
+    flex-direction: row;
+    position: relative;
+}
+
+.mainContainer > div {
+    flex: 1;
+    position: relative;
+}
+
+.editorCoter {
+    display: flex;
+    flex-direction: column;
+    /*align-items: center;*/
+    justify-content: center;
+}

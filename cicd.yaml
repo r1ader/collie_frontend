@@ -1,0 +1,14 @@
+deploy:
+  meta:
+    name: advertorial
+    owner: heyifan
+  deployment:
+    name: advertorial
+    port:
+      - 80
+  ingress:
+    domainnames:
+      - namespace: dev
+        value: alpha-marco.aidigger.com
+      - namespace: production
+        value: marco.aidigger.com

@@ -1,5 +1,73 @@
 
-html, body, :global(#root) {
-  height: 100%;
+.rowDivCenter {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
+.rowDivBetween {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rowDivAround {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.rowDivStart {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.rowDivEnd {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.linkSpan {
+    color: #4193ff;
+    cursor: pointer;
+}
+
+.invalidSpan {
+    color: #cdcdcd;
+}
+
+.relativeDiv {
+    position: relative;
+}
+
+
+.tableLeftBottom {
+    position: absolute;
+    left: 20px;
+    top: -50px;
+    width: 360px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /*justify-content: space-between;*/
+}
+
+.disableColor {
+    color: #d8d8d8;
+}
+
+.splitIcon {
+    display: inline-block;
+    border-right: 1px solid #a6a6a6;
+    width: 0;
+    height: 1em;
+    margin-left: 5px;
+    margin-right: 5px;
+}

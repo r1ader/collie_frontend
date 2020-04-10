@@ -1,0 +1,313 @@
+import React, {Component} from 'react'
+import {connect} from 'dva'
+import {Table, Select, Empty, Button, Modal, Input, Icon, Highlighter, PageHeader, Menu} from 'antd'
+import MonacoEditor from "react-monaco-editor"
+import styles from './index.css'
+import {getColumnSearchProps, ModelEditor} from '../../components'
+
+
+class ProjectManager extends Component {
+    constructor(props) {
+        super(props)
+        this.getColumnSearchProps = getColumnSearchProps.bind(this)
+        this.dispatch = this.props.dispatch
+        this.state = {
+            pagination: {},
+            tableLoading: false,
+            sorter: {},
+            filters: {}
+        }
+    }
+
+    componentDidMount() {
+        this.reloadFuncs()
+    }
+
+    handleClick = (item) => {
+        const {funcs} = this.props.func
+        const func = funcs.find(o => o.id === item.key)
+        this.setState({
+            desc: undefined,
+            ...func
+        })
+    }
+
+    handleSave = (id, data, callback) => {
+        this.setState({saving: true})
+        this.dispatch({
+            type: 'func/saveFunc',
+            payload: {
+                id: id,
+                ...data
+            },
+            callback: () => {
+                this.setState({saving: false})
+                if (_.isFunction(callback)) {
+                    callback()
+                }
+            }
+        })
+    }
+
+    reloadFuncs = () => {
+        this.dispatch({
+            type: 'func/getFunc',
+            callback: (funcs) => {
+                // if (this.state.id === undefined) {
+                //     const func = funcs.find(o => o.id === 'add')
+                //     this.setState({
+                //         content: func.content,
+                //         id: func.id,
+                //         testInput: func.testInput
+                //     })
+                // }
+            }
+        })
+    }
+
+    onEditor = (data, callback) => {
+        delete data._id
+        this.handleSave(this.state.id, data, () => {
+            this.reloadFuncs()
+            if (_.isFunction(callback)) {
+                callback()
+            }
+        })
+    }
+
+    get getFuncEditor() {
+        const {funcs} = this.props.func
+        const func = funcs.find(o => o.id === this.state.id)
+        const folders = []
+        funcs.map(o => {
+            if (o.folder && folders.indexOf(o.folder) === -1) {
+                folders.push(o.folder)
+            }
+        })
+        if (this.state.tempFolder) {
+            folders.push(this.state.tempFolder)
+        }
+        const dataStruct = [
+            {
+                title: '描述',
+                index: 'desc'
+            },
+            {
+                title: '文件夹',
+                index: 'folder',
+                render: (callback, initialData) => {
+                    return <div>
+                        <Select
+                            showSearch
+                            mode={'search'}
+                            style={{width: 300}}
+                            value={initialData}
+                            onSearch={(value) => {
+                                this.setState({tempFolderStr: value})
+                            }}
+                            onInputKeyDown={(e, a) => {
+                                if (e.key === 'Enter') {
+                                    this.setState({tempFolder: this.state.tempFolderStr})
+                                }
+                            }}
+                            onChange={(value) => {
+                                callback(value)
+                                this.setState({
+                                    tempFolder: undefined,
+                                    tempFolderStr: undefined
+                                })
+                                // this.handleSave(this.state.id, {folder: value}, this.reloadFuncs)
+                            }}>
+                            {
+                                folders.map((o, i) => {
+                                    return <Select.Option key={i} value={o}>
+                                        {o}
+                                    </Select.Option>
+                                })
+                            }
+                        </Select>
+                    </div>
+                }
+            }
+        ]
+        if (!this.state.content) {
+            return <div className={styles.editorCoter}><Empty/></div>
+        }
+        return <div className={styles.editorCoter}>
+            <div style={{maxHeight: 80, flex: 1}}>
+                <PageHeader
+                    ghost={false}
+                    title={this.state.id}
+                    subTitle={func.desc || '...'}
+                    extra={[
+                        <ModelEditor
+                            key={'editor'}
+                            initialData={func}
+                            title={'编辑'}
+                            dataStruct={dataStruct}
+                            onConfirme={this.onEditor}
+                        >
+                            <Button>编辑</Button>
+                        </ModelEditor>,
+                        <Button type={'danger'} onClick={() => {
+                            this.setState({id: undefined, content: undefined})
+                            this.handleSave(this.state.id, {content: null}, this.reloadFuncs)
+                        }}>删除</Button>,
+                        <Button key="2" onClick={() => {
+                            this.setState({testModelVisible: true})
+                        }}>测试</Button>,
+                        <Button loading={this.state.saving} key="1"
+                                onClick={() => {
+                                    this.handleSave(this.state.id, {content: this.state.content}, this.reloadFuncs)
+                                }}>
+                            保存
+                        </Button>,
+                    ]}
+                />
+            </div>
+            <div style={{flex: 1}}>
+                <MonacoEditor
+                    // ref={meRef}
+                    language={"javascript"}
+                    theme={"vs"}
+                    options={{fontSize: 14}}
+                    value={this.state.content || ''}
+                    onChange={(text) => {
+                        this.setState({content: text})
+                    }}
+                />
+            </div>
+        </div>
+    }
+
+    get getMenu() {
+        const {funcs} = this.props.func
+        const folders = []
+        funcs.map(o => {
+            if (o.folder && folders.indexOf(o.folder) === -1) {
+                folders.push(o.folder)
+            }
+        })
+        return <div style={{minWidth: 256, maxWidth: 256, height: '100%'}}>
+            <Menu
+                style={{height: '100%'}}
+                onClick={this.handleClick}
+                defaultSelectedKeys={[]}
+                defaultOpenKeys={[]}
+                mode="inline"
+            >
+                <div style={{padding: 10}}>
+                    <Input onChange={(e) => {
+                        this.setState({funcNameWaitAdd: e.target.value})
+                    }} style={{width: 150, marginRight: 20}}/>
+                    <Button onClick={() => {
+                        this.handleSave(this.state.funcNameWaitAdd, {
+                            content: 'function main(){\n' +
+                                '    return 0\n' +
+                                '}'
+                        }, this.reloadFuncs)
+                    }}>添加</Button>
+                </div>
+                {
+                    folders.map((folder) => {
+                        return <Menu.SubMenu
+                            key={folder}
+                            title={folder}
+                        >
+                            {
+                                funcs.filter(o => o.folder === folder).map(func => {
+                                    return <Menu.Item key={func.id}>{func.id}</Menu.Item>
+
+                                })
+                            }
+                        </Menu.SubMenu>
+                    })
+                }
+                {
+                    funcs.filter(o => o.folder === undefined).map(func => {
+                        return <Menu.Item key={func.id}>{func.id}</Menu.Item>
+
+                    })
+                }
+            </Menu>
+        </div>
+    }
+
+    get getTestModal() {
+        return <Modal
+            style={{height: 500}}
+            visible={this.state.testModelVisible} title={'测试'}
+            confirmLoading={this.state.testing}
+            onCancel={() => {
+                this.setState({
+                    testModelVisible: false,
+                    testResult: undefined
+                })
+            }}
+            onOk={() => {
+                this.setState({testing: true})
+                this.dispatch({
+                    type: 'func/runFunc',
+                    payload: {
+                        data: this.state.testInput,
+                        id: this.state.id
+                    },
+                    callback: (result => {
+                        this.setState({testResult: result, testing: false})
+                    })
+                })
+            }}
+            okText={'测试'}
+        >
+            <div
+                className={'rowDivBetween'}
+                style={{padding: 5}}
+            >
+                <span style={{
+                    fontSize: '16px',
+                    fontWeight: 'bolder'
+                }}>输入：</span>
+                <Button onClick={() => {
+                    this.handleSave(this.state.id, {testInput: this.state.testInput}, this.reloadFuncs)
+                }}>保存测试用例</Button>
+            </div>
+            <div style={{height: '200px'}}>
+                <MonacoEditor
+                    language={"json"}
+                    theme={"vs"}
+                    options={{fontSize: 14}}
+                    value={JSON.stringify(this.state.testInput, null, 2) || ''}
+                    onChange={(text) => {
+                        try {
+                            const data = JSON.parse(text)
+                            this.setState({testInput: data})
+                        } catch (e) {
+
+                        }
+                    }}
+                />
+            </div>
+            <h3>输出：</h3>
+            <div style={{height: '200px'}}>
+                <MonacoEditor
+                    language={"json"}
+                    theme={"vs"}
+                    options={{fontSize: 14}}
+                    value={JSON.stringify(this.state.testResult, null, 2) || ''}
+                />
+            </div>
+        </Modal>
+    }
+
+    render() {
+        return (
+            <div className={styles.mainContainer}>
+                {this.getMenu}
+                {this.getFuncEditor}
+                {this.getTestModal}
+            </div>
+        )
+    }
+}
+
+export default connect(state => state)(ProjectManager)

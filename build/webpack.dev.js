@@ -4,7 +4,8 @@ module.exports = {
     mode: 'development', // 模式，表示dev环境
     entry: './src/index.js', // 入口文件
     module: {
-        rules: [{
+        rules: [
+            {
             test: /\.js$/,
             exclude: /node_modules/, // 排除node_modules中的代码
             use: [{
@@ -37,7 +38,8 @@ module.exports = {
                 test: /\.css$/,
                 include: [/node_modules/, /src\/index\.css/],
                 use: ['style-loader', 'css-loader']
-            }, {
+            },
+            {
                 test: /\.ttf$/,
                 use: ['file-loader']
             }
@@ -70,7 +72,7 @@ module.exports = {
                 }
             },
             '/proxy': {
-                target: 'http://0.0.0.0:7001',
+                target: 'http://120.26.42.184:7001',
                 pathRewrite: {'^/proxy/': '/api/v1/'},
                 headers: {
                     host: 'caster2.aidigger.com',

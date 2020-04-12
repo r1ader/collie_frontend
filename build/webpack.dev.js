@@ -71,7 +71,7 @@ module.exports = {
             },
             '/proxy': {
                 target: 'http://0.0.0.0:7001',
-                pathRewrite: {'^/proxy/': ''},
+                pathRewrite: {'^/proxy/': '/api/v1/'},
                 headers: {
                     host: 'caster2.aidigger.com',
                     cookie: '_ga=GA1.2.2092037943.1562140647; UM_distinctid=16bc233837072b-07f16c7cc3ddee-37677e02-13c680-16bc2338371c15; code=600099; session_id=skey/600099; skey=9t6LX5O0Oy7c2O-VruOX4uHpBQWSYtWU; username=aGV5aWZhbg==; realname=5L2V5LiA5Yeh; thumb=/api/v1/avatar/default; hd=/api/v1/avatar/default; avatar=/api/v1/avatar/default; avatar_hd=/api/v1/avatar/default; SERVERID=77d50f83294194ee2a79502cdd44e390|1577185185|1577185182'

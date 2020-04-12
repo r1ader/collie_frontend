@@ -181,29 +181,7 @@ class BuildRequest {
         URL = '/proxy' + URL
       }
     } else {
-      // 如果是生产环境 分测试和生产
-      if (URL.indexOf('/caster/') > -1 && window.location.hostname.indexOf('alpha') === -1) {
-        URL = 'https://caster2.aidigger.com/api/v1' + URL.replace(/\/caster(.*)/, '$1')
-      } else if (window.location.hostname.indexOf('alpha') > -1 && URL.indexOf('/caster/') > -1) {
-        URL = 'https://alpha-caster2.aidigger.com/api/v1' + URL.replace(/\/caster(.*)/, '$1')
-      } else if (URL.indexOf('kge') > -1 && window.location.hostname.indexOf('alpha') > -1) {
-        URL = 'https://alpha-socrates.aidigger.com/api/v1' +
-          URL.replace(/\/kge(.*)/, '$1')
-      } else if (URL.indexOf('/path/') > -1 && window.location.hostname.indexOf('alpha') === -1) {
-        URL = 'https://caster2.aidigger.com/api/v1/run/prod' + URL.replace(/\/path(.*)/, '$1')
-      } else if (window.location.hostname.indexOf('alpha') > -1 && URL.indexOf('/path/') > -1) {
-        URL = 'https://caster2.aidigger.com/api/v1/run/dev' + URL.replace(/\/path(.*)/, '$1')
-      } else if (URL.indexOf('/interface/') > -1 && window.location.hostname.indexOf('alpha') === -1) {
-        if (URL.indexOf('run') > -1) {
-          URL = 'https://caster2.aidigger.com/api/v1' + URL.replace(/\/interface(.*)/, '$1') + '_prod'
-        } else {
-          URL = 'https://caster2.aidigger.com/api/v1' + URL.replace(/\/interface(.*)/, '$1')
-        }
-      } else if (window.location.hostname.indexOf('alpha') > -1 && URL.indexOf('/interface/') > -1) {
-        URL = 'https://caster2.aidigger.com/api/v1' + URL.replace(/\/interface(.*)/, '$1')
-      } else if (URL.indexOf('mock') === -1) {
-        URL = '/api/v1' + URL
-      }
+        URL = 'http://120.26.42.184:7001/api/v1' + URL
     }
 
     let _this = this

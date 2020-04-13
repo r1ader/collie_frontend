@@ -181,7 +181,7 @@ class BuildRequest {
         URL = '/proxy' + URL
       }
     } else {
-        URL = 'http://120.26.42.184:7001/api/v1' + URL
+        URL = 'http://120.26.42.184/api/v1' + URL
     }
 
     let _this = this

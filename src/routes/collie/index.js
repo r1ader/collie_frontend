@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'dva'
-import { Table, Select, Empty, Button, Modal, Input, Icon, Highlighter, PageHeader, Menu } from 'antd'
+import { Select, Empty, Button, Input, Highlighter, PageHeader, Menu } from 'antd'
 import MonacoEditor from 'react-monaco-editor'
 import styles from './index.css'
 import { getColumnSearchProps, ModelEditor } from '../../components'
+import RunModal from './RunModal'
 
 class Index extends Component {
   constructor (props) {
@@ -11,6 +12,7 @@ class Index extends Component {
     this.getColumnSearchProps = getColumnSearchProps.bind(this)
     this.dispatch = this.props.dispatch
     this.state = {
+      id: 'debug',
       pagination: {},
       tableLoading: false,
       sorter: {},
@@ -52,14 +54,11 @@ class Index extends Component {
     this.dispatch({
       type: 'func/getFunc',
       callback: (funcs) => {
-        // if (this.state.id === undefined) {
-        //     const func = funcs.find(o => o.id === 'add')
-        //     this.setState({
-        //         content: func.content,
-        //         id: func.id,
-        //         testInput: func.testInput
-        //     })
-        // }
+        const func = funcs.find(o => o.id === this.state.id)
+        this.setState({
+          desc: undefined,
+          ...func
+        })
       }
     })
   }
@@ -148,25 +147,47 @@ class Index extends Component {
             >
               <Button>编辑</Button>
             </ModelEditor>,
-            <Button type={'danger'} onClick={() => {
-              this.setState({ id: undefined, content: undefined })
-              this.handleSave(this.state.id, { content: null }, this.reloadFuncs)
-            }}>删除</Button>,
-            <Button key="2" onClick={() => {
-              this.setState({ testModelVisible: true })
-            }}>测试</Button>,
-            <Button loading={this.state.saving} key="1"
+            <RunModal
+              onClick={(callback) => {
+                this.handleSave('debug', { content: this.state.content }, callback)
+              }}
+              runOnVisible={true}
+              key={'RunModaldebug'}
+              path={'debug'}
+              testInput={this.state.testInput}
+              title={'调试'}
+              text={'调试'}
+            />,
+            <Button key={'save'} loading={this.state.saving} key="1"
                     onClick={() => {
                       this.handleSave(this.state.id, { content: this.state.content }, this.reloadFuncs)
                     }}>
               保存
             </Button>,
+            <RunModal
+              handleSave={this.handleSave}
+              reloadFuncs={this.reloadFuncs}
+              key={'RunModaltest'}
+              path={this.state.id}
+              testInput={this.state.testInput}
+              title={'测试'}
+              text={'测试'}
+            />,
+            <Button key={'delete'} type={'danger'} onClick={() => {
+              this.setState({ id: undefined, content: undefined })
+              this.handleSave(this.state.id, { content: null }, this.reloadFuncs)
+            }}>删除</Button>,
           ]}
         />
       </div>
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, position: 'relative' }} onKeyDown={(e) => {
+        if (e.key === 'F5') {
+          const dom = document.querySelector('#debugButton')
+          dom.click()
+          console.log(dom)
+        }
+      }}>
         <MonacoEditor
-          // ref={meRef}
           language={'javascript'}
           theme={'vs'}
           options={{ fontSize: 14 }}
@@ -232,78 +253,11 @@ class Index extends Component {
     </div>
   }
 
-  get getTestModal () {
-    return <Modal
-      style={{ height: 500 }}
-      visible={this.state.testModelVisible} title={'测试'}
-      confirmLoading={this.state.testing}
-      onCancel={() => {
-        this.setState({
-          testModelVisible: false,
-          testResult: undefined
-        })
-      }}
-      onOk={() => {
-        this.setState({ testing: true })
-        this.dispatch({
-          type: 'func/runFunc',
-          payload: {
-            data: this.state.testInput,
-            id: this.state.id
-          },
-          callback: (result => {
-            this.setState({ testResult: result, testing: false })
-          })
-        })
-      }}
-      okText={'测试'}
-    >
-      <div
-        className={'rowDivBetween'}
-        style={{ padding: 5 }}
-      >
-                <span style={{
-                  fontSize: '16px',
-                  fontWeight: 'bolder'
-                }}>输入：</span>
-        <Button onClick={() => {
-          this.handleSave(this.state.id, { testInput: this.state.testInput }, this.reloadFuncs)
-        }}>保存测试用例</Button>
-      </div>
-      <div style={{ height: '200px' }}>
-        <MonacoEditor
-          language={'json'}
-          theme={'vs'}
-          options={{ fontSize: 14 }}
-          value={JSON.stringify(this.state.testInput, null, 2) || ''}
-          onChange={(text) => {
-            try {
-              const data = JSON.parse(text)
-              this.setState({ testInput: data })
-            } catch (e) {
-
-            }
-          }}
-        />
-      </div>
-      <h3>输出：</h3>
-      <div style={{ height: '200px' }}>
-        <MonacoEditor
-          language={'json'}
-          theme={'vs'}
-          options={{ fontSize: 14 }}
-          value={JSON.stringify(this.state.testResult, null, 2) || ''}
-        />
-      </div>
-    </Modal>
-  }
-
   render () {
     return (
       <div className={styles.mainContainer}>
         {this.getMenu}
         {this.getFuncEditor}
-        {this.getTestModal}
       </div>
     )
   }

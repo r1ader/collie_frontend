@@ -20,7 +20,6 @@ export default {
             payload = payload || {}
             let request = ajaxGetFunc.getInstance().execute({})
             let response = yield call(request)
-            console.log('response', response)
             yield put({
                 type: 'updateState',
                 payload: {

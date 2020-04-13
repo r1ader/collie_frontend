@@ -1,76 +1,20 @@
 import React from 'react'
-import { Layout, Menu, Dropdown, Icon, Avatar, Modal, Input } from 'antd'
+import { Layout, Menu, Dropdown, Icon } from 'antd'
 import { withRouter, Link } from 'dva/router'
 import { connect } from 'dva'
 import styles from './index.css'
-import classNames from 'classnames'
-import cookie from 'react-cookies'
 
-import AuthorityView from '../../AuthorityView'
-
-const { Header, Content } = Layout
+const { Content } = Layout
 
 class MyLayout extends React.Component {
-  menu = (
-    <Menu>
-      <Menu.Item>
-        <a onClick={this.userLogout}>注销</a>
-      </Menu.Item>
-    </Menu>
-  )
 
   constructor (props) {
     super(props)
-    this.userLogout = this.userLogout.bind(this)
-    this.state = {
-      visible: false,
-      currentTemplateName: ''
-    }
+    this.state = {}
   }
 
   componentDidMount () {
     console.clear()
-  }
-
-  userLogout () {
-    window
-      .fetch('https://owl.aidigger.com/api/v1/session', {
-        method: 'DELETE',
-        mode: 'cors',
-        cache: 'no-store',
-        credentials: 'include'
-      })
-      .then(() => {
-        window.location.href = `https://owl.aidigger.com/login?next=${
-          window.location.href
-          }`
-      })
-  }
-
-  handleClick (e) {
-    if (e.key === 'template') {
-      window.localStorage.removeItem('selectedParagraphList')
-    }
-  }
-
-  handleCancel = () => {
-    this.setState({
-      visible: false
-    })
-  }
-
-  handleOk = () => {
-    this.refactorName(this.state.currentTemplateName)
-    this.setState({
-      visible: false
-    })
-  }
-
-  userLogout () {
-    cookie.remove('session', { path: '/' })
-    setTimeout(() => {
-      window.location.href = `https://owl.aidigger.com/login?next=https://${window.location.hostname}`
-    }, 1000)
   }
 
   render () {

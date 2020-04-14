@@ -1,10 +1,18 @@
-.bodyCoter {
+.mainCoter {
     display: flex;
-    flex-direction: row;
-    height: calc(100vh - 100px)
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-.bodyCoter > div {
-    flex: 1;
-    padding: 10px;
+.mainShower {
+    width: 100vw;
+    height: calc(100vh - 50px);
+    background-color: #f6fbff;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+    font-weight: bolder;
 }

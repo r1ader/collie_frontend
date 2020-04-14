@@ -17,8 +17,27 @@ class MyLayout extends React.Component {
     console.clear()
   }
 
-  render () {
+  handelRoll = () => {
+    const tagHight = document.documentElement.clientHeight - 50
+    const scrollTarget = tagHight
+    console.log(window, tagHight)
+    const pr = () => {
+      const scrollNow = window.scrollY
+      let length = (scrollTarget - scrollNow)
+      if (Math.abs(length) > 5) {
+        length /= 10
+      } else if (length === 0) {
+        return
+      }
+      window.scrollTo(0, scrollNow + length)
+    }
+    const timer = setInterval(pr, 16)
+    setTimeout(() => {
+      clearInterval(timer)
+    }, 1000)
+  }
 
+  render () {
     return (
       <Layout>
         <div
@@ -28,24 +47,12 @@ class MyLayout extends React.Component {
           <div className={'rowDivStart'}>
             <div className={styles.title}
                  onClick={() => {
-                   this.props.history.push('/')
+                   this.props.history.push('/blog_article')
                  }}
             >r1ader
             </div>
           </div>
-          {
-            this.state.realname &&
-
-            <Dropdown overlay={<Menu>
-              <Menu.Item>
-                <a onClick={this.userLogout} style={{ width: 150 }}>注销</a>
-              </Menu.Item>
-            </Menu>}>
-              <a style={{ fontSize: 15, color: 'white', paddingRight: 20 }} href='#'>
-                {this.state.realname} <Icon type='down'/>
-              </a>
-            </Dropdown>
-          }
+          {/*<div onClick={this.handelRoll} style={{ padding: 10 }}>asdf</div>*/}
         </div>
         <Content style={{ marginTop: 50, backgroundColor: 'white' }}>
           {this.props.children}

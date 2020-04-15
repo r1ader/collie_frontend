@@ -23,7 +23,7 @@ class Index extends Component {
     >
       <KeyAccess
         onAccess={(key) => {
-          if (key === '123') {
+          if (key === '963') {
             this.setState({ accessVisible: false })
             this.dispatch({
               type: 'authority/actionUpdateRole',
@@ -43,7 +43,7 @@ class Index extends Component {
     return (
       <div className={styles.mainCoter}>
         <div className={styles.mainShower}>
-          ASDF
+          Welcome
         </div>
         <div onClick={() => {
           this.props.history.push('/blog_article')

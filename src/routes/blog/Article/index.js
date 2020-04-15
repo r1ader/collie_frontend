@@ -152,7 +152,10 @@ class Index extends Component {
               })
             }}>保存</Button>
           ] : [
-            <div>{this.props.authority.role === 'admin' && <Button>编辑</Button>}</div>
+            <div>
+              {this.props.authority.role === 'admin' &&
+              <a href={`/#/blog/${this.props.match.params.article_id}/edit`}><Button>编辑</Button></a>
+              }</div>
           ]}
         />
         <div className={styles.bodyCoter} style={this.state.mode === 'edit' ? { maxWidth: 2000 } : {}}>

@@ -13,7 +13,7 @@ function RouterConfig ({ history }) {
   return <Router history={history}>
     <Switch>
       <EmptyLayout>
-        <Route path='/blog' exact component={BlogIndex}/>
+        <Route path='/' exact component={BlogIndex}/>
         <Route path='/collie' exact component={Collie}/>
         <Route path='/blog_article' exact component={BlogArticleList}/>
         <Route path='/blog/:article_id' exact component={BlogArticle}/>

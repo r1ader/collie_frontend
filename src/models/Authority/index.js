@@ -38,6 +38,15 @@ export default {
         callback()
       }
     },
+    * actionUpdateRole ({ payload, callback }, { call, put }) {
+      if (payload) {
+        console.log(payload)
+        yield put({
+          type: 'updateManyState',
+          payload: payload
+        })
+      }
+    },
   },
 
   reducers: {

@@ -47,7 +47,7 @@ class MyLayout extends React.Component {
           <div className={'rowDivStart'}>
             <div className={styles.title}
                  onClick={() => {
-                   this.props.history.push('/blog_article')
+                   this.props.history.push('/')
                  }}
             >r1ader
             </div>

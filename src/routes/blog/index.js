@@ -1,21 +1,42 @@
 import React, { Component } from 'react'
 import { connect } from 'dva'
-import { PageHeader, Button, message, Input, Icon, Tag, Select } from 'antd'
+import { PageHeader, Button, message, Input, Icon, Tag, Select, Modal } from 'antd'
 import styles from './index.css'
+import KeyAccess from './KeyAccess'
 
 class Index extends Component {
   constructor (props) {
     super(props)
     this.dispatch = this.props.dispatch
-    this.state = {}
+    this.state = {
+    }
   }
 
-  handleScroll = (e) => {
-
-  }
-
-  componentWillMount () {
-    window.addEventListener('scroll', this.handleScroll)
+  get renderAccess () {
+    return <Modal
+      footer={null}
+      onCancel={() => {
+        this.setState({ accessVisible: false })
+      }}
+      title={'Access'}
+      visible={this.state.accessVisible}
+    >
+      <KeyAccess
+        onAccess={(key) => {
+          if (key === '123') {
+            this.setState({ accessVisible: false })
+            this.dispatch({
+              type: 'authority/actionUpdateRole',
+              payload: {
+                role: 'admin'
+              }
+            })
+          } else {
+            message.error('密码错误')
+          }
+        }}
+      />
+    </Modal>
   }
 
   render () {
@@ -24,12 +45,19 @@ class Index extends Component {
         <div className={styles.mainShower}>
           ASDF
         </div>
-        <div className={styles.mainShower}>
-          BJFH
+        <div onClick={() => {
+          this.props.history.push('/blog_article')
+        }} className={styles.mainShower}>
+          BLOG
         </div>
-        <div className={styles.mainShower}>
-          lkik
+        <div
+          onClick={() => {
+            this.setState({ accessVisible: true })
+          }}
+          className={styles.mainShower}>
+          {this.props.authority.role || 'ACCESS'}
         </div>
+        {this.renderAccess}
       </div>
     )
   }

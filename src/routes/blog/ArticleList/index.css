@@ -12,10 +12,12 @@
 
 .overview{
     padding-bottom: 20px;
+    padding-left: 10px;
+    border-left: 5px solid goldenrod;
 }
 
 .title {
-    font-size: 15px;
+    font-size: 20px;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;

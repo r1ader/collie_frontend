@@ -39,7 +39,7 @@ class Index extends Component {
         <div style={{ padding: 20 }}>
           {articles.map((article, index) => {
             return <div onClick={() => {
-              this.props.history.push(`/#/blog/${article.id}`)
+              this.props.history.push(`#/blog/${article.id}`)
             }} className={styles.overview} key={index}>
               <a href={`/#/blog/${article.id}`} className={styles.title}>{article.title}</a>
               <div className={styles.content}>{article.content.slice(1, 200)}...</div>

@@ -53,7 +53,7 @@
     "core-js": "2.6.11",
     "dva": "2.4.1",
     "eigen-editor": "^1.1.219",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "moment": "2.24.0",
     "monaco-editor": "^0.20.0",
     "monaco-editor-webpack-plugin": "^1.9.0",
